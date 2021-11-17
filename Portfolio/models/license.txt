@@ -1,0 +1,8 @@
+Model Information:
+* title:	Rick and Morty sauser
+* source:	https://sketchfab.com/3d-models/rick-and-morty-sauser-ed154f4d2de94d4db71fb6753a73e3e4
+* author:	Yuri Kruglov (https://sketchfab.com/YuriKruglov)
+
+Model License:
+* license type:	SKETCHFAB Editorial (https://sketchfab.com/licenses)
+* requirements:	Use only in connection with events that are newsworthy or of public interest
