@@ -2,6 +2,7 @@ import './style.css'
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const scene = new THREE.Scene();
 
@@ -79,12 +80,43 @@ Array(100).fill().forEach(addStar);
 const spaceTexture = new THREE.TextureLoader().load('space.jpg');
 scene.background = spaceTexture;
 
+// load rick and morty
+const loader = new GLTFLoader();
+// Load a glTF resource
+loader.load(
+	// resource URL
+	'models/RickAndMorty/scene.gltf',
+	// called when the resource is loaded
+	function ( gltf ) {
+    gltf.animations; // Array<THREE.AnimationClip>
+		gltf.scene; // THREE.Group
+		gltf.scenes; // Array<THREE.Group>
+		gltf.cameras; // Array<THREE.Camera>
+		gltf.asset; // Object
+    const scale = 0.1;
+    const rickAndMortyScene = gltf.scene;
+    rickAndMortyScene.children.forEach((mesh) => mesh.scale.set(scale, scale, scale));
+    rickAndMortyScene.position.setX(-5);
+    rickAndMortyScene.position.setY(-5);
+    rickAndMortyScene.position.setZ(45);
+
+    scene.add(rickAndMortyScene);
+	},
+	// called while loading is progressing
+	function ( xhr ) {
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+	},
+	// called when loading has errors
+	function ( error ) {
+		console.log( 'An error happened...' );
+    console.log(error);
+	}
+);
+
 function animate() {
   requestAnimationFrame( animate );
-
-  // torus.rotation.x += 0.01;
-  // torus.rotation.y += 0.005;
-  // torus.rotation.z += 0.01;
+  
+  
 
   controls.update();
 
