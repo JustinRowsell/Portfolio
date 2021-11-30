@@ -64,14 +64,14 @@ const earth = new THREE.Mesh(
 scene.add(earth);
 
 function moveCamera() {
-  const t = document.body.getBoundingClientRect().top;
+  const top = document.body.getBoundingClientRect().top;
   // earth.rotation.x += 0.05;
   earth.rotation.y += 0.05;
   // earth.rotation.z += 0.05;
 
-  camera.position.z = t * -0.01;
-  camera.position.x = t * -0.0002;
-  camera.position.y = t * -0.0002;
+  camera.position.z = top * -0.01;
+  camera.position.x = top * -0.0002;
+  camera.position.y = top * -0.0002;
 }
 document.body.onscroll = moveCamera;
 
@@ -79,6 +79,45 @@ Array(100).fill().forEach(addStar);
 
 const spaceTexture = new THREE.TextureLoader().load('space.jpg');
 scene.background = spaceTexture;
+
+
+let rickAndMortyScene;
+let flyX = 0;
+let flyY = 0;
+let directionDuration = 100;
+let moveSpeed = 0.01;
+function animate() {
+  requestAnimationFrame( animate );
+  if (rickAndMortyScene) {
+    let range = 2;
+    let halfRange = range / 2;
+    if (flyX == 0 && flyY == 0) {
+      let randXY = THREE.MathUtils.randFloat(0, range);
+      let randPosNeg = THREE.MathUtils.randFloat(0, range);
+      
+      if (randPosNeg > halfRange)
+        moveSpeed = moveSpeed * -1;
+
+      if (randXY < halfRange) {
+        flyX = directionDuration;
+      } else {
+        flyY = directionDuration;
+      }
+    } else if (flyX > 0) {
+      let currX = rickAndMortyScene.position.x; 
+      rickAndMortyScene.position.setX(currX + moveSpeed);
+      flyX -= 1;
+    } else {
+      let currY = rickAndMortyScene.position.y;
+      rickAndMortyScene.position.setY(currY + moveSpeed);
+      flyY -= 1;
+    }
+  }
+  
+  controls.update();
+
+  renderer.render(scene, camera);
+}
 
 // load rick and morty
 const loader = new GLTFLoader();
@@ -94,17 +133,18 @@ loader.load(
 		gltf.cameras; // Array<THREE.Camera>
 		gltf.asset; // Object
     const scale = 0.1;
-    const rickAndMortyScene = gltf.scene;
+    rickAndMortyScene = gltf.scene;
     rickAndMortyScene.children.forEach((mesh) => mesh.scale.set(scale, scale, scale));
     rickAndMortyScene.position.setX(-5);
     rickAndMortyScene.position.setY(-5);
-    rickAndMortyScene.position.setZ(45);
-
+    rickAndMortyScene.position.setZ(40);
+    
     scene.add(rickAndMortyScene);
 	},
 	// called while loading is progressing
 	function ( xhr ) {
 		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    animate();
 	},
 	// called when loading has errors
 	function ( error ) {
@@ -112,15 +152,3 @@ loader.load(
     console.log(error);
 	}
 );
-
-function animate() {
-  requestAnimationFrame( animate );
-  
-  
-
-  controls.update();
-
-  renderer.render(scene, camera);
-}
-
-animate();
